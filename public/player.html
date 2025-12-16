@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>捕魚遊戲</title>
+<link rel="stylesheet" href="style.css">
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</head>
+<body>
+<div class="rules-box">
+  <h3>遊戲規則</h3>
+  <p>
+    1. 池塘內一開始有 100 條魚。<br>
+    2. 有兩個漁夫：甲（你）和乙（對方）。<br>
+    3. 每天早上，甲乙各自輸入要捕的魚數量。<br>
+    4. 晚上剩下的魚會翻倍成為隔天的魚量。<br>
+    5. 遊戲持續 20 天或池塘沒有魚時結束。<br>
+    6. 你的目標是捕到最多的魚，但不會看到對方捕魚數。<br>
+    7. 遊戲結束後，你會看到自己的總捕魚數，乙可以下載完整 JSON。
+  </p>
+</div>
+
+<div class="progress-container">
+  <div class="progress-bar" id="progressBar">Day 1</div>
+</div>
+
+<div class="container">
+  <div id="playerA-box" class="player-box">
+    <h2>甲（受試者）</h2>
+    <p id="fish">池塘總魚數: 100</p>
+    <p id="scoreA">你目前捕到: 0</p>
+    <input id="catchA" type="number" min="0">
+    <button onclick="submitA()">送出</button>
+    <p class="status" id="statusA"></p>
+  </div>
+
+  <div id="playerB-box" class="player-box">
+    <h2>乙（實驗者）</h2>
+    <p id="scoreB">你目前捕到: 0</p>
+    <input id="catchB" type="number" min="0">
+    <button onclick="submitB()">送出</button>
+    <p class="status" id="statusB"></p>
+    <button onclick="downloadJSON()">下載 JSON</button>
+  </div>
+</div>
+</body>
+</html>

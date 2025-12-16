@@ -2,81 +2,62 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-const fs = require('fs');
+
+app.use(express.static('public'));
+app.use(express.json());
 
 const PORT = 3000;
 
-// 靜態資源
-app.use(express.static('public'));
+// 乙方帳號
+const users = [{ username: "FishSean", password: "971218" }];
 
-// 乙帳號密碼（固定）
-const accounts = {
-  "FishSean.971218": "TaiSean60805Chiayiseniorhighschoolstudent"
-};
+let rooms = {};
 
-// 遊戲初始狀態
-let gameState = {
-  totalFish: 100,
-  day: 1,
-  maxDays: 20,
-  scoreA: 0,
-  scoreB: 0,
-  tempA: null,
-  tempB: null,
-  records: []
-};
-
-// Socket.IO 連線
-io.on('connection', (socket) => {
-  console.log('有玩家連線:', socket.id);
-
-  socket.emit('update', gameState);
-
-  socket.on('catchA', (count) => {
-    gameState.tempA = count;
-    checkDayEnd();
-  });
-
-  socket.on('catchB', (count) => {
-    gameState.tempB = count;
-    checkDayEnd();
-  });
-
-  function checkDayEnd() {
-    if(gameState.tempA !== null && gameState.tempB !== null){
-      let totalCatch = gameState.tempA + gameState.tempB;
-      if(totalCatch > gameState.totalFish) totalCatch = gameState.totalFish;
-      let remaining = gameState.totalFish - totalCatch;
-
-      gameState.scoreA += gameState.tempA;
-      gameState.scoreB += gameState.tempB;
-
-      gameState.records.push({
-        day: gameState.day,
-        fishBefore: gameState.totalFish,
-        catchA: gameState.tempA,
-        catchB: gameState.tempB,
-        fishAfter: remaining*2,
-        timestamp: new Date().toISOString()
-      });
-
-      gameState.totalFish = remaining*2;
-      gameState.day++;
-      gameState.tempA = null;
-      gameState.tempB = null;
-
-      io.emit('update', gameState);
-
-      if(gameState.day > gameState.maxDays || gameState.totalFish === 0){
-        io.emit('gameOver', {scoreA: gameState.scoreA, scoreB: gameState.scoreB});
-        fs.writeFileSync('data.json', JSON.stringify(gameState.records, null, 2));
-      }
-    } else {
-      io.emit('update', gameState);
-    }
-  }
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  res.json({ success: !!user });
 });
 
-http.listen(PORT, '0.0.0.0', () => {
-  console.log(`伺服器運行在 http://192.168.7.38:3000`);
+http.listen(PORT, '0.0.0.0', () => console.log(`Server running at http://192.168.7.38:${PORT}`));
+
+io.on('connection', socket => {
+
+  socket.on('join', ({ role, playerId }) => {
+    socket.role = role;
+    socket.playerId = playerId;
+
+    if (!rooms[playerId]) {
+      rooms[playerId] = { day: 1, totalFish: 100, aFish: 0, bFish: 0, submissions: { A: null, B: null } };
+    }
+
+    socket.join(playerId);
+    checkWaiting(socket);
+  });
+
+  socket.on('submitFish', ({ count }) => {
+    const room = rooms[socket.playerId];
+    if (!room) return;
+    room.submissions[socket.role] = count;
+    checkWaiting(socket);
+  });
+
+  function checkWaiting(socket) {
+    const room = rooms[socket.playerId];
+    const { submissions } = room;
+
+    if (submissions.A === null) io.to(socket.playerId).emit('wait', '等待甲方提交...');
+    if (submissions.B === null) io.to(socket.playerId).emit('wait', '等待乙方提交...');
+
+    if (submissions.A !== null && submissions.B !== null) {
+      const totalCatch = Math.min(submissions.A + submissions.B, room.totalFish);
+      const remaining = room.totalFish - totalCatch;
+      room.aFish += submissions.A;
+      room.bFish += submissions.B;
+
+      io.to(socket.playerId).emit('nightStart', { room, remaining });
+
+      room.submissions = { A: null, B: null };
+    }
+  }
 });

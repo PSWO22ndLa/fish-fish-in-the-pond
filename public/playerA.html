@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>抓魚遊戲 - 甲方</title>
+<link rel="stylesheet" href="style.css">
+<script src="/socket.io/socket.io.js"></script>
+<script src="main.js"></script>
+</head>
+<body class="day">
+
+<h1>抓魚遊戲 🐟 (甲方)</h1>
+<div id="status">等待遊戲開始</div>
+<div id="pond"></div>
+
+<div class="controls">
+  <input type="number" id="aFish" placeholder="甲抓幾隻">
+  <button onclick="submitFish()">送出抓魚數</button>
+</div>
+
+<script>
+const role = 'A';
+const playerId = prompt("請輸入受試者編號/房間號");
+initGame(role, playerId);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>抓魚遊戲 - 乙方</title>
+<link rel="stylesheet" href="style.css">
+<script src="/socket.io/socket.io.js"></script>
+<script src="main.js"></script>
+</head>
+<body class="day">
+
+<h1>抓魚遊戲 🐟 (乙方)</h1>
+
+<div class="login-box">
+  <input type="text" id="username" placeholder="帳號">
+  <input type="password" id="password" placeholder="密碼">
+  <input type="text" id="roomB" placeholder="房間號">
+  <button onclick="loginB()">登入 & 加入房間</button>
+</div>
+
+<div id="status">尚未開始遊戲</div>
+<div id="pond"></div>
+
+<div class="controls">
+  <input type="number" id="bFish" placeholder="乙抓幾隻">
+  <button onclick="submitFish()">送出抓魚數</button>
+</div>
+
+<script>
+function loginB() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const room = document.getElementById('roomB').value;
+  if (!username || !password || !room) return alert("請輸入帳號密碼與房間號");
+
+  fetch('/login', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({username,password})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      document.querySelector('.login-box').style.display='none';
+      const role='B';
+      const playerId=room;
+      initGame(role, playerId);
+    } else alert('帳號或密碼錯誤');
+  });
+}
+</script>
+
+</body>
+</html>

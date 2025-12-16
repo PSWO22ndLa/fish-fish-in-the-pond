@@ -1,1 +1,26 @@
-{}
+[
+  {
+    "day": 1,
+    "fishBefore": 100,
+    "catchA": 40,
+    "catchB": 25,
+    "fishAfter": 70,
+    "timestamp": "2025-12-16T05:01:09.241Z"
+  },
+  {
+    "day": 2,
+    "fishBefore": 70,
+    "catchA": 40,
+    "catchB": 25,
+    "fishAfter": 10,
+    "timestamp": "2025-12-16T05:01:16.790Z"
+  },
+  {
+    "day": 3,
+    "fishBefore": 10,
+    "catchA": 40,
+    "catchB": 25,
+    "fishAfter": 0,
+    "timestamp": "2025-12-16T05:01:17.105Z"
+  }
+]

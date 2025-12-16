@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>捕魚實驗遊戲 - 登入</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>捕魚實驗遊戲登入</h1>
+<div class="container">
+  <div class="box">
+    <h2>甲（受試者）</h2>
+    <input type="text" id="subjectID" placeholder="輸入受試者編號"><br>
+    <button onclick="startAsSubject()">開始遊戲</button>
+    <p class="note">你只需輸入編號即可開始遊戲</p>
+  </div>
+
+  <div class="box">
+    <h2>乙（實驗者）</h2>
+    <input type="text" id="expUser" placeholder="帳號"><br>
+    <input type="password" id="expPass" placeholder="密碼"><br>
+    <button onclick="startAsExperimenter()">登入遊戲</button>
+    <p class="note">乙需登入才能操作與下載數據</p>
+  </div>
+</div>
+
+<script>
+function startAsSubject() {
+  const id = document.getElementById('subjectID').value;
+  if(!id) { alert("請輸入受試者編號"); return; }
+  alert(`你已以受試者編號 ${id} 登入遊戲`);
+  window.location.href = "player.html?role=A&id=" + id;
+}
+
+function startAsExperimenter() {
+  const user = document.getElementById('expUser').value;
+  const pass = document.getElementById('expPass').value;
+  if(user==="FishSean.971218" && pass==="TaiSean60805Chiayiseniorhighschoolstudent"){
+    alert(`乙 ${user} 登入成功`);
+    window.location.href = "player.html?role=B&user=" + user;
+  } else {
+    alert("帳號或密碼錯誤");
+  }
+}
+</script>
+</body>
+</html>

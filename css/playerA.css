@@ -1,0 +1,82 @@
+/* 字型與頁面基礎 */
+body {
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  transition: background 0.5s;
+}
+
+/* 日間背景漸層 */
+body.day {
+  background: linear-gradient(to bottom, #99ccff 0%, #3399ff 60%, #003366 100%);
+}
+
+/* 夜晚背景 */
+body.night {
+  background: #000000;
+}
+
+/* 標題 */
+h1 {
+  margin-bottom: 10px;
+  font-size: 2em;
+  color: #00d6fc;
+  text-shadow: 1px 1px 3px #000;
+}
+
+/* 魚池 */
+#pond {
+  width: 80%;
+  height: 200px;
+  margin: 20px auto;
+  background: linear-gradient(to bottom, #66b2ff 0%, #3399ff 100%);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  color: white;
+  font-weight: bold;
+  line-height: 200px;
+}
+
+/* 魚 */
+.fish {
+  width: 30px;
+  height: 15px;
+  background-color: yellow;
+  position: absolute;
+  border-radius: 50%;
+  animation: swim 5s linear infinite;
+}
+
+@keyframes swim {
+  0% { left: 0%; top: 20%; }
+  25% { left: 25%; top: 40%; }
+  50% { left: 50%; top: 60%; }
+  75% { left: 75%; top: 40%; }
+  100% { left: 100%; top: 20%; }
+}
+
+/* 控制區塊 */
+.controls, #status {
+  margin-top: 20px;
+  font-size: 1.2em;
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: none;
+  background-color: #00d6fc;
+  color: #003366;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #3399ff;
+}

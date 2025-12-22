@@ -1,0 +1,50 @@
+/* index.css */
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #99ccff, #3399ff);
+  color: white;
+  text-align: center;
+  padding: 40px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 30px;
+}
+
+#chooseRole {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+#playerA-box, #playerB-box {
+  background: rgba(0,0,50,0.7);
+  padding: 20px;
+  border-radius: 15px;
+  min-width: 220px;
+}
+
+input {
+  display: block;
+  width: 180px;
+  margin: 10px auto;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #1e90ff;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #007acc;
+}

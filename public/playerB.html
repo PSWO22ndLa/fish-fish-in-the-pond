@@ -2,53 +2,35 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>抓魚遊戲 - 乙方</title>
-<link rel="stylesheet" href="style.css">
+<title>乙漁夫</title>
+<link rel="stylesheet" href="css/playerB.css">
 <script src="/socket.io/socket.io.js"></script>
-<script src="main.js"></script>
 </head>
-<body class="day">
-
-<h1>抓魚遊戲 🐟 (乙方)</h1>
-
-<div class="login-box">
-  <input type="text" id="username" placeholder="帳號">
-  <input type="password" id="password" placeholder="密碼">
-  <input type="text" id="roomB" placeholder="房間號">
-  <button onclick="loginB()">登入 & 加入房間</button>
+<body>
+<h1>乙漁夫</h1>
+<div id="status"></div>
+<div id="pond">魚數: <span id="fishCount">100</span></div>
+<div id="controls">
+  捕魚數量: <input type="number" id="fishInput" min="0">
+  <button onclick="submitFish()">提交</button>
 </div>
+<button id="restartBtn" onclick="restartGame()">重新開始</button>
+<h2>實驗數據（僅乙方可見）</h2>
 
-<div id="status">尚未開始遊戲</div>
-<div id="pond"></div>
+<table id="dataTable" border="1" style="margin:auto;color:white;">
+  <thead>
+    <tr>
+      <th>Day</th>
+      <th>開始魚數</th>
+      <th>甲抓</th>
+      <th>乙抓</th>
+      <th>結束魚數</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-<div class="controls">
-  <input type="number" id="bFish" placeholder="乙抓幾隻">
-  <button onclick="submitFish()">送出抓魚數</button>
-</div>
-
-<script>
-function loginB() {
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  const room = document.getElementById('roomB').value;
-  if (!username || !password || !room) return alert("請輸入帳號密碼與房間號");
-
-  fetch('/login', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({username,password})
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      document.querySelector('.login-box').style.display='none';
-      const role='B';
-      const playerId=room;
-      initGame(role, playerId);
-    } else alert('帳號或密碼錯誤');
-  });
-}
-</script>
-
+<button onclick="downloadData()">下載實驗資料</button>
+<script src="js/playerB.js"></script>
 </body>
 </html>

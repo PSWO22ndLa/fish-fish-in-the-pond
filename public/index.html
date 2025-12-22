@@ -1,42 +1,56 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>抓魚遊戲</title>
-<link rel="stylesheet" href="style.css">
-<script src="/socket.io/socket.io.js"></script>
-<script src="main.js"></script>
+<title>魚池實驗入口</title>
+<link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-
-<h1>抓魚遊戲 🐟</h1>
-
-<!-- 乙方登入 -->
-<div class="login-box" id="loginB">
-  <h2>乙方登入</h2>
-  <input type="text" id="username" placeholder="帳號">
-  <input type="password" id="password" placeholder="密碼">
-  <input type="text" id="roomB" placeholder="房間號">
-  <button onclick="login()">登入 & 加入房間</button>
+<h1>魚池捕魚實驗</h1>
+<div id="chooseRole">
+  <div id="playerA-box">
+    <h2>受試者（甲）</h2>
+    <input type="text" id="playerIdA" placeholder="輸入編號">
+    <button onclick="joinA()">開始遊戲</button>
+  </div>
+  <div id="playerB-box">
+    <h2>實驗者（乙）</h2>
+    <input type="text" id="username" placeholder="帳號">
+    <input type="password" id="password" placeholder="密碼">
+    <input type="text" id="playerIdB" placeholder="房間號">
+    <button onclick="loginB()">登入並開始遊戲</button>
+  </div>
 </div>
 
-<!-- 甲方登入 -->
-<div class="login-box" id="loginA">
-  <h2>甲方受試者</h2>
-  <input type="text" id="playerIdA" placeholder="受試者編號">
-  <input type="text" id="roomA" placeholder="房間號">
-  <button onclick="joinAsA()">開始遊戲</button>
-</div>
+<script>
+function joinA() {
+  const id = document.getElementById('playerIdA').value.trim();
+  if (!id) return alert('請輸入編號');
+  window.location.href = `playerA.html?roomId=${id}`;
+}
 
-<div id="status">尚未開始遊戲</div>
+function loginB() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const roomId = document.getElementById('playerIdB').value.trim();
+  if (!username || !password || !roomId) return alert('請完整填寫');
 
-<div id="pond"></div>
-
-<div class="controls">
-  <input type="number" id="aFish" placeholder="甲抓幾隻">
-  <input type="number" id="bFish" placeholder="乙抓幾隻">
-  <button onclick="submitFish()">送出抓魚數</button>
-</div>
-
+  fetch('/login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({username, password})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = `playerB.html?roomId=${roomId}`;
+    } else {
+      alert('登入失敗');
+    }
+  });
+}
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="index.js"></script>
 </body>
 </html>

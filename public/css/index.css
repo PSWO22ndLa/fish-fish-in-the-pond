@@ -1,50 +1,256 @@
-/* index.css */
+/* 全域設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #99ccff, #3399ff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  text-align: center;
-  padding: 40px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* 背景動畫裝飾 */
+body::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  top: -200px;
+  left: -200px;
+  animation: float 20s infinite ease-in-out;
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  bottom: -150px;
+  right: -150px;
+  animation: float 15s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, 50px) scale(1.1); }
+}
+
+/* 標題 */
 h1 {
-  font-size: 36px;
-  margin-bottom: 30px;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 50px;
+  text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeInDown 1s ease;
+  z-index: 1;
+  letter-spacing: 2px;
 }
 
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 選擇區塊容器 */
 #chooseRole {
   display: flex;
   justify-content: center;
-  gap: 50px;
+  gap: 40px;
+  flex-wrap: wrap;
+  z-index: 1;
+  animation: fadeInUp 1s ease 0.3s backwards;
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 玩家卡片 */
 #playerA-box, #playerB-box {
-  background: rgba(0,0,50,0.7);
-  padding: 20px;
-  border-radius: 15px;
-  min-width: 220px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
+  border-radius: 20px;
+  min-width: 280px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
 }
 
+#playerA-box::before,
+#playerB-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+}
+
+#playerA-box:hover::before,
+#playerB-box:hover::before {
+  left: 100%;
+}
+
+#playerA-box:hover,
+#playerB-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* 卡片標題 */
+h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+#playerA-box h2 {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+#playerB-box h2 {
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* 輸入框 */
 input {
   display: block;
-  width: 180px;
-  margin: 10px auto;
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
+  width: 100%;
+  margin: 15px 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
+input::placeholder {
+  color: #999;
+}
+
+input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.8);
+  background: white;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  transform: scale(1.02);
+}
+
+/* 按鈕 */
 button {
-  padding: 10px 16px;
-  border-radius: 10px;
+  width: 100%;
+  padding: 14px 20px;
+  margin-top: 20px;
+  border-radius: 12px;
   border: none;
-  background: #1e90ff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+button:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 button:hover {
-  background: #007acc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* 區分兩個按鈕顏色 */
+#playerA-box button {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+#playerB-box button {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+
+  #chooseRole {
+    gap: 20px;
+  }
+
+  #playerA-box, #playerB-box {
+    min-width: 100%;
+    padding: 30px 20px;
+  }
 }

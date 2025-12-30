@@ -1,82 +1,290 @@
 /* 字型與頁面基礎 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
   text-align: center;
-  margin: 0;
-  padding: 20px;
   min-height: 100vh;
-  transition: background 0.5s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: background 0.8s ease;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* 日間背景漸層 */
+/* 日間背景 - 清新藍天 */
 body.day {
-  background: linear-gradient(to bottom, #99ccff 0%, #3399ff 60%, #003366 100%);
+  background: linear-gradient(to bottom, 
+    #87CEEB 0%, 
+    #4A90E2 50%, 
+    #2E5C8A 100%
+  );
 }
 
-/* 夜晚背景 */
+/* 夜晚背景 - 星空效果 */
 body.night {
-  background: #000000;
+  background: linear-gradient(to bottom, #000000 0%, #1a1a2e 100%);
+}
+
+/* 星星效果（夜晚） */
+body.night::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 85%, white, transparent),
+    radial-gradient(1px 1px at 15% 65%, white, transparent);
+  background-size: 200% 200%;
+  animation: stars 120s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes stars {
+  from { background-position: 0 0; }
+  to { background-position: 100% 100%; }
 }
 
 /* 標題 */
 h1 {
-  margin-bottom: 10px;
-  font-size: 2em;
-  color: #00d6fc;
-  text-shadow: 1px 1px 3px #000;
+  margin-bottom: 20px;
+  font-size: 3em;
+  font-weight: 700;
+  color: #FFD700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.6),
+               2px 2px 4px rgba(0, 0, 0, 0.5);
+  animation: glow 2s ease-in-out infinite alternate;
+  z-index: 10;
+  letter-spacing: 3px;
 }
 
-/* 魚池 */
+@keyframes glow {
+  from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.5); }
+  to { text-shadow: 0 0 30px rgba(255, 215, 0, 0.9), 2px 2px 8px rgba(0, 0, 0, 0.7); }
+}
+
+/* 狀態顯示 */
+#status {
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  font-weight: 600;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 魚池容器 */
 #pond {
-  width: 80%;
-  height: 200px;
+  width: 90%;
+  max-width: 800px;
+  height: 300px;
   margin: 20px auto;
-  background: linear-gradient(to bottom, #66b2ff 0%, #3399ff 100%);
-  border-radius: 20px;
+  background: linear-gradient(to bottom, 
+    rgba(102, 178, 255, 0.8) 0%, 
+    rgba(51, 153, 255, 0.9) 50%,
+    rgba(0, 102, 204, 1) 100%
+  );
+  border-radius: 25px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
-  color: white;
-  font-weight: bold;
-  line-height: 200px;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.3),
+    inset 0 -5px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  z-index: 10;
 }
 
-/* 魚 */
-.fish {
-  width: 30px;
-  height: 15px;
-  background-color: yellow;
+/* 水波效果 */
+#pond::before {
+  content: '';
   position: absolute;
-  border-radius: 50%;
-  animation: swim 5s linear infinite;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: wave 3s linear infinite;
 }
 
-@keyframes swim {
-  0% { left: 0%; top: 20%; }
-  25% { left: 25%; top: 40%; }
-  50% { left: 50%; top: 60%; }
-  75% { left: 75%; top: 40%; }
-  100% { left: 100%; top: 20%; }
+@keyframes wave {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* 魚 - 更可愛的造型（移除固定動畫路徑） */
+.fish {
+  width: 40px;
+  height: 20px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  position: absolute;
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.5));
+  transition: transform 0.1s linear;
+  /* ✅ 移除固定的 animation */
+}
+
+/* 魚尾巴 */
+.fish::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 12px solid #FFA500;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  right: -8px;
+  top: 2px;
+  transform: rotate(45deg);
 }
 
 /* 控制區塊 */
-.controls, #status {
-  margin-top: 20px;
-  font-size: 1.2em;
+#controls {
+  margin-top: 30px;
+  z-index: 10;
 }
 
+#controls label {
+  font-size: 1.3em;
+  font-weight: 600;
+  margin-right: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* 輸入框 */
+input[type="number"] {
+  padding: 12px 20px;
+  font-size: 1.2em;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  width: 120px;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-weight: 600;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #FFD700;
+  background: white;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  transform: scale(1.05);
+}
+
+/* 按鈕 */
 button {
-  padding: 8px 16px;
-  font-size: 1em;
-  border-radius: 5px;
+  padding: 12px 30px;
+  font-size: 1.2em;
+  border-radius: 12px;
   border: none;
-  background-color: #00d6fc;
-  color: #003366;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #333;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+  margin: 10px 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+button:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 button:hover {
-  background-color: #3399ff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 165, 0, 0.6);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+#restartBtn {
+  background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+  color: white;
+  margin-top: 20px;
+}
+
+#restartBtn:hover {
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  #pond {
+    width: 95%;
+    height: 200px;
+  }
+
+  #status {
+    font-size: 1.2em;
+    padding: 10px 20px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+  }
+
+  input[type="number"] {
+    width: 100px;
+    font-size: 1em;
+  }
 }

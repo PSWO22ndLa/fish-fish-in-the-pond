@@ -2,19 +2,21 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>甲漁夫</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>甲漁夫 - 魚池實驗</title>
 <link rel="stylesheet" href="css/playerA.css">
 <script src="/socket.io/socket.io.js"></script>
 </head>
-<body>
-<h1>甲漁夫</h1>
-<div id="status"></div>
-<div id="pond">魚數: <span id="fishCount">100</span></div>
+<body class="day">
+<h1>🎣 甲漁夫</h1>
+<div id="status">等待連線中...</div>
+<div id="pond"></div>
 <div id="controls">
-  捕魚數量: <input type="number" id="fishInput" min="0">
-  <button onclick="submitFish()">提交</button>
+  <label for="fishInput">🐟 捕魚數量：</label>
+  <input type="number" id="fishInput" min="0" placeholder="0">
+  <button onclick="submitFish()">✅ 提交</button>
 </div>
-<button id="restartBtn" onclick="restartGame()">重新開始</button>
+<button id="restartBtn" onclick="restartGame()">🔄 重新開始</button>
 
 <script src="js/playerA.js"></script>
 </body>

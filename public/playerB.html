@@ -2,25 +2,28 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>乙漁夫</title>
-<link rel="stylesheet" href="css/playerB.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乙漁夫 - 實驗監控</title>
+<link rel="stylesheet" href="./css/playerB.css">
 <script src="/socket.io/socket.io.js"></script>
 </head>
-<body>
-<h1>乙漁夫</h1>
-<div id="status"></div>
-<div id="pond">魚數: <span id="fishCount">100</span></div>
+<body class="day">
+<h1>🔬 乙漁夫（實驗者）</h1>
+<div id="status">等待連線中...</div>
+<div id="pond"></div>
 <div id="controls">
-  捕魚數量: <input type="number" id="fishInput" min="0">
-  <button onclick="submitFish()">提交</button>
+  <label for="fishInput">🐟 捕魚數量：</label>
+  <input type="number" id="fishInput" min="0" placeholder="0">
+  <button onclick="submitFish()">✅ 提交</button>
 </div>
-<button id="restartBtn" onclick="restartGame()">重新開始</button>
-<h2>實驗數據（僅乙方可見）</h2>
+<button id="restartBtn" onclick="restartGame()">🔄 重新開始</button>
+<button id="saveBtn" onclick="saveExperiment()">💾 保存當前實驗數據</button>
 
-<table id="dataTable" border="1" style="margin:auto;color:white;">
+<h2>📊 當前實驗數據</h2>
+<table id="dataTable">
   <thead>
     <tr>
-      <th>Day</th>
+      <th>天數</th>
       <th>開始魚數</th>
       <th>甲抓</th>
       <th>乙抓</th>
@@ -30,7 +33,21 @@
   <tbody></tbody>
 </table>
 
-<button onclick="downloadData()">下載實驗資料</button>
+<h2>📁 已保存的受試者數據</h2>
+<div id="savedExperiments">
+  <p style="opacity: 0.7;">尚無保存的實驗數據</p>
+</div>
+
+<!-- 彈出視窗 -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle">受試者數據</h2>
+    <div id="modalData"></div>
+    <button onclick="downloadModalData()" class="download-btn">下載此數據</button>
+  </div>
+</div>
+
 <script src="js/playerB.js"></script>
 </body>
 </html>

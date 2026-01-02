@@ -7,12 +7,17 @@ const fishInput = document.getElementById('fishInput');
 const status = document.getElementById('status');
 let totalFish = 100;
 let fishElements = [];
-let currentLogs = []; // 當前實驗數據
-let currentModalData = null; // 當前彈出視窗的數據
+let currentLogs = [];
+let currentModalData = null;
 
 status.innerText = `🔑 房間代碼: ${roomId} | 請告知受試者此代碼`;
 
-// 魚的類別
+// 創建魚數顯示元素
+const fishCountDisplay = document.createElement('div');
+fishCountDisplay.className = 'fish-count-display';
+fishCountDisplay.innerHTML = `<span class="count-number">100</span><span class="count-label">條魚</span>`;
+pond.appendChild(fishCountDisplay);
+
 class Fish {
   constructor(index) {
     this.element = document.createElement('div');
@@ -23,7 +28,12 @@ class Fish {
     this.speedY = (Math.random() - 0.5) * 0.3;
     this.element.style.left = this.x + '%';
     this.element.style.top = this.y + '%';
+    
+    this.element.style.opacity = '0';
     pond.appendChild(this.element);
+    setTimeout(() => {
+      this.element.style.opacity = '1';
+    }, 10);
   }
 
   update() {
@@ -49,8 +59,19 @@ class Fish {
   }
 
   remove() {
-    this.element.remove();
+    this.element.style.opacity = '0';
+    setTimeout(() => this.element.remove(), 300);
   }
+}
+
+function updateFishCount(count) {
+  const countNumber = document.querySelector('.count-number');
+  countNumber.textContent = count;
+  
+  countNumber.style.transform = 'scale(1.3)';
+  setTimeout(() => {
+    countNumber.style.transform = 'scale(1)';
+  }, 300);
 }
 
 function clearFish() {
@@ -66,6 +87,7 @@ function renderFish(n) {
     fishElements.push(new Fish(i));
   }
 
+  updateFishCount(n);
   pond.setAttribute('data-count', n);
 }
 
@@ -82,11 +104,13 @@ function breedAnimation(oldCount, newCount) {
   const addFish = setInterval(() => {
     if (added >= toAdd) {
       clearInterval(addFish);
+      updateFishCount(newCount);
       pond.setAttribute('data-count', newCount);
       return;
     }
     
     fishElements.push(new Fish(oldCount + added));
+    updateFishCount(oldCount + added + 1);
     added++;
   }, interval);
 }
@@ -112,7 +136,6 @@ function restartGame() {
   }
 }
 
-// 💾 保存當前實驗數據
 function saveExperiment() {
   if (currentLogs.length === 0) {
     return alert('⚠️ 尚無實驗數據可保存');
@@ -123,7 +146,6 @@ function saveExperiment() {
     return alert('⚠️ 受試者編號不能為空');
   }
 
-  // 發送保存請求到服務器
   socket.emit('saveExperiment', {
     subjectId: subjectId.trim(),
     logs: currentLogs,
@@ -131,16 +153,14 @@ function saveExperiment() {
   });
 }
 
-// 📂 載入已保存的實驗列表
 function loadSavedExperiments() {
   socket.emit('getSavedExperiments');
 }
 
-// 🔍 顯示特定受試者的數據
 function showExperiment(subjectId, data) {
   currentModalData = { subjectId, data };
   
-  document.getElementById('modalTitle').innerText = `受試者: ${subjectId}`;
+  document.getElementById('modalTitle').innerText = `📊 受試者: ${subjectId}`;
   
   const modalData = document.getElementById('modalData');
   modalData.innerHTML = `
@@ -167,10 +187,21 @@ function showExperiment(subjectId, data) {
       </tbody>
     </table>
     <div class="summary">
-      <p>📊 實驗總結：</p>
-      <p>總天數：${data.length} 天</p>
-      <p>甲總捕獲：${data.reduce((sum, log) => sum + log.catchA, 0)} 條</p>
-      <p>乙總捕獲：${data.reduce((sum, log) => sum + log.catchB, 0)} 條</p>
+      <p>📊 實驗總結</p>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">總天數</span>
+          <span class="summary-value">${data.length}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">甲總捕獲</span>
+          <span class="summary-value">${data.reduce((sum, log) => sum + log.catchA, 0)}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">乙總捕獲</span>
+          <span class="summary-value">${data.reduce((sum, log) => sum + log.catchB, 0)}</span>
+        </div>
+      </div>
     </div>
   `;
   
@@ -181,7 +212,6 @@ function closeModal() {
   document.getElementById('modal').style.display = 'none';
 }
 
-// 下載彈出視窗中的數據
 function downloadModalData() {
   if (!currentModalData) return;
   
@@ -196,7 +226,6 @@ function downloadModalData() {
   a.click();
 }
 
-// 點擊視窗外部關閉
 window.onclick = function(event) {
   const modal = document.getElementById('modal');
   if (event.target === modal) {
@@ -204,17 +233,15 @@ window.onclick = function(event) {
   }
 }
 
-// Socket 事件
 socket.on('sync', game => {
   totalFish = game.totalFish;
   renderFish(totalFish);
   status.innerText = game.finished
-    ? `遊戲結束！甲抓${game.totalCatch.A}條，乙抓${game.totalCatch.B}條`
-    : `🔑 房間: ${roomId} | 第${game.day}天 | 魚池剩餘: ${game.totalFish}條`;
+    ? `🎊 遊戲結束！甲抓 ${game.totalCatch.A} 條，乙抓 ${game.totalCatch.B} 條`
+    : `🔑 房間: ${roomId} | 第 ${game.day} 天 | 魚池剩餘: ${game.totalFish} 條`;
   document.body.classList.add('day');
   document.body.classList.remove('night');
 
-  // 更新當前實驗數據
   currentLogs = game.logs || [];
   
   const tbody = document.querySelector('#dataTable tbody');
@@ -240,12 +267,12 @@ socket.on('wait', msg => {
 socket.on('night', data => {
   document.body.classList.add('night');
   document.body.classList.remove('day');
-  status.innerText = '🌙 夜晚中… 魚正在繁殖';
+  status.innerText = '🌙 夜晚降臨… 魚兒正在繁殖';
 
   const oldCount = parseInt(pond.getAttribute('data-count')) || 0;
   
   setTimeout(() => {
-    status.innerText = '✨ 魚兒正在繁殖...';
+    status.innerText = '✨ 新生命誕生中...';
     breedAnimation(oldCount, data.newFishCount);
   }, 1000);
 });
@@ -254,35 +281,32 @@ socket.on('roomInfo', info => {
   status.innerText = `🔑 房間代碼: ${info.roomId} | 等待受試者加入...`;
 });
 
-// 💾 保存成功
 socket.on('experimentSaved', ({ subjectId }) => {
   alert(`✅ 受試者 ${subjectId} 的數據已保存！`);
-  loadSavedExperiments(); // 重新載入列表
+  loadSavedExperiments();
 });
 
-// 📂 接收已保存的實驗列表
 socket.on('savedExperiments', (experiments) => {
   const container = document.getElementById('savedExperiments');
   
   if (experiments.length === 0) {
-    container.innerHTML = '<p style="opacity: 0.7;">尚無保存的實驗數據</p>';
+    container.innerHTML = '<p style="opacity: 0.7; font-size: 1.1em;">尚無保存的實驗數據</p>';
     return;
   }
 
   container.innerHTML = experiments.map(exp => `
     <button class="subject-btn" onclick='socket.emit("loadExperiment", "${exp.subjectId}")'>
-      📋 受試者: ${exp.subjectId}
+      <span class="subject-id">📋 ${exp.subjectId}</span>
+      <span class="subject-info">${exp.logCount} 天實驗</span>
       <span class="timestamp">${new Date(exp.timestamp).toLocaleString('zh-TW')}</span>
     </button>
   `).join('');
 });
 
-// 📊 載入特定實驗數據
 socket.on('experimentData', ({ subjectId, logs }) => {
   showExperiment(subjectId, logs);
 });
 
-// 頁面載入時取得已保存的實驗
 setTimeout(() => {
   loadSavedExperiments();
 }, 1000);

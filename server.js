@@ -31,7 +31,7 @@ app.post('/login', (req, res) => {
   res.json({ success: !!user });
 });
 
-http.listen(PORT, () => console.log(`Server running at http://192.168.7.38:${PORT}`));
+http.listen(PORT, () => console.log(`Server running at http://192.168.7.32:${PORT}`));
 
 // 輔助函數：保存實驗數據到文件
 function saveExperimentToFile(subjectId, logs, roomId) {

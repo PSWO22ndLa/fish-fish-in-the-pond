@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>魚池實驗入口</title>
+<title>🐟 魚池捕魚實驗</title>
 <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
@@ -11,35 +11,34 @@
 <div id="chooseRole">
   <div id="playerA-box">
     <h2>受試者（甲）</h2>
-    <input type="text" id="playerIdA" placeholder="請輸入您的編號">
-    <button onclick="joinA()">🎮 開始遊戲</button>
+    <input type="text" id="roomCode" placeholder="請輸入房間代碼" maxlength="6" style="text-transform: uppercase;">
+    <button onclick="joinA()">🎮 加入實驗</button>
+    <p>請向實驗者索取房間代碼</p>
   </div>
   
   <div id="playerB-box">
     <h2>實驗者（乙）</h2>
     <input type="text" id="username" placeholder="帳號">
     <input type="password" id="password" placeholder="密碼">
-    <input type="text" id="playerIdB" placeholder="受試者編號">
-    <button onclick="loginB()">🔬 登入並監控</button>
+    <button onclick="loginB()">🔬 建立實驗房間</button>
   </div>
 </div>
 
 <script>
-// 甲方：直接使用編號作為房間號
 function joinA() {
-  const id = document.getElementById('playerIdA').value.trim();
-  if (!id) return alert('請輸入編號');
-  window.location.href = `playerA.html?roomId=${id}`;
+  const roomCode = document.getElementById('roomCode').value.trim().toUpperCase();
+  if (!roomCode) return alert('⚠️ 請輸入房間代碼');
+  if (roomCode.length !== 6) return alert('⚠️ 房間代碼應為6位英數字');
+  
+  window.location.href = `playerA.html?roomId=${roomCode}`;
 }
 
-// 乙方：登入後監控指定受試者
 function loginB() {
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
-  const roomId = document.getElementById('playerIdB').value.trim();
   
-  if (!username || !password || !roomId) {
-    return alert('⚠️ 請完整填寫所有欄位');
+  if (!username || !password) {
+    return alert('⚠️ 請輸入帳號和密碼');
   }
 
   fetch('/login', {
@@ -50,6 +49,7 @@ function loginB() {
   .then(res => res.json())
   .then(data => {
     if (data.success) {
+      const roomId = generateRoomCode();
       window.location.href = `playerB.html?roomId=${roomId}`;
     } else {
       alert('❌ 登入失敗：帳號或密碼錯誤');
@@ -59,6 +59,15 @@ function loginB() {
     alert('⚠️ 連線錯誤，請檢查網路');
     console.error(err);
   });
+}
+
+function generateRoomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
 }
 </script>
 </body>
